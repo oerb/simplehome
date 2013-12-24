@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load static %}
+{% load endless %}
+{% block title %} <h2> Home </h2>{% endblock %}
+{% block content %}
+    <div class="container">
+            <div class="col-xs-6 col-sm-4" style="overflow: hidden;">
+                {% paginate items %}
+                {% for element in items %}
+                <div class="row">
+                        <h2 class="text-primary">
+                             {{element.item_subject}}
+                        </h2>
+                        <p>{{ element.item_date_creation | date:"D, d.m.Y" }}</p>
+                        <p style="overflow: hidden;">
+                            {{ element.item_description | slice:":250" | safe }}
+                            <a class="btn btn-default" role="button" href="{% url "blog_item" element.id %}"> … </a>
+                        </p>
+                </div>
+                {% endfor %}
+                {% show_pages %}
+            </div>
+    </div>
+{% endblock %}

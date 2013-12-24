@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}<h2>{{ menuchoice.subject }}</h2>{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row row-offcanvas row-offcanvas-right">
+            <div class="col-xs-8 col-sm-8">
+                {% for itemlist in itemlist_byMenu_id %}
+                <div class="row">
+                    {% for element in itemlist %}
+                    <div class="col-6 col-sm-6 col-lg-4" style="overflow: hidden;">
+                        <h3>
+                            {{element.item_subject}}
+                        </h3>
+                        <p>{{ element.item_date_creation | date:"D, d/m/Y" }}</p>
+                        <p>
+                           {{ element.item_description | slice:":250" | safe   }}
+                        </p>
+                        <p>
+                            <a class="btn btn-default" role="button" href="{% url "blog_item" element.id %}"> … </a>
+                        </p>
+                    </div>
+                     {% endfor %}
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+
+
+
+
+{% endblock %}

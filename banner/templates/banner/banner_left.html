@@ -1,0 +1,13 @@
+{% for banner in bannerlist_left %}
+    {% if banner.banner_header_hide == False %}
+        <h2>{{ banner.banner_header }}</h2>
+    {% endif %}
+    <a href="{% if banner.bannerlink == None %}/{% else %}{{ banner.bannerlink }}{% endif %}" >
+        <img src="{{ MEDIA_URL }}{{ banner.bannerimage.bild_file}}" alt="image"/>
+    </a>
+    <p>
+        {{ banner.bannerhtml | safe }}
+    </p>
+
+{% endfor %}
+

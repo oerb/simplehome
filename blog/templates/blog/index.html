@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %} {{ item.item_subject }} {% endblock %}
+{% block content %}
+    {%  if item.id %}
+            {% if item.item_description %}
+
+                    {{ item.item_description | safe }}
+                {% else %}
+                  No description provided
+                {% endif %}
+            <p><br></p>
+                <p class="text-danger"><b>Erstellt:</b> {{item.item_date_creation|date:"D, d.m.Y"}} von {{ item.item_author.username }}</p>
+    {% else %}
+    <div class="jumbotron">
+        <h2>
+            Sorry this Item does not exists !!!
+        </h2>
+    </div>
+    {% endif %}
+{% endblock %}

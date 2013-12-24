@@ -43,3 +43,7 @@ nosetests.xml
 
 # virtualenv
 .env/
+
+# Projektfiles
+*.jpg
+*.svg
