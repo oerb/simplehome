@@ -149,7 +149,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
         "simplehome.custom_processors.level2menulist",
         "simplehome.custom_processors.bannerlist_right",
         "simplehome.custom_processors.bannerlist_left",
-        "simplehome.custom_processors.footer",
+        "simplehome.custom_processors.metainfos_blogname",
+        "simplehome.custom_processors.metainfos_footer",
         "simplehome.custom_processors.metainfos_author",
         "simplehome.custom_processors.metainfos_keywords",
         "simplehome.custom_processors.metainfos_descriptions"

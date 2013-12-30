@@ -54,8 +54,9 @@ class MetaInfos(models.Model):
     Class for Methatags, Impressum else
     """
     metainfo_subject = models.CharField(max_length=255, verbose_name=u'Subject',
-                                         help_text=u'Implemented Tags: impressum, keywords, description, author, footer')
-    metainfo_html = HTMLField(verbose_name=u'Html-Field', blank=True, null=True)
+                                         help_text=u'Implemented Tags: impressum, keywords, description, '
+                                                   u'author, footer, blogname')
+    # metainfo_html = HTMLField(verbose_name=u'Html-Field', blank=True, null=True)
     metainfo = models.TextField(verbose_name=u'Metainfo',blank=True, null=True)
 
     class Meta:

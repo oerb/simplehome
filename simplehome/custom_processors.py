@@ -30,12 +30,29 @@ def bannerlist_right(request):
     bannerlist_right = Banner.objects.filter(position=2).filter(banner_hide=False)
     return {'bannerlist_right':bannerlist_right}
 
-def footer(request):
+def metainfos_blogname(request):
     """
-    Base.html Footer out auf MetaInfos
+    Base.html Blogname
     """
-    footer = MetaInfos.objects.filter(metainfo_subject='footer')
-    return {'footer':footer}
+    mblogname = MetaInfos.objects.filter(metainfo_subject='blogname')
+    if mblogname:
+        for e in mblogname:
+            metainfo_blogname = e.metainfo
+    else:
+        metainfo_blogname = 'simplehome'
+    return {'metainfo_blogname':metainfo_blogname}
+
+def metainfos_footer(request):
+    """
+    Base.html Footer
+    """
+    mfooter = MetaInfos.objects.filter(metainfo_subject='footer')
+    if mfooter:
+        for e in mfooter:
+            metainfo_footer = e.metainfo
+    else:
+        metainfo_footer = 'Simplehome Django based Blog Example by Oerb'
+    return {'metainfo_footer':metainfo_footer}
 
 def metainfos_author(request):
     """
