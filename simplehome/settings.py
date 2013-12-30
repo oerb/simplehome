@@ -128,6 +128,7 @@ INSTALLED_APPS = (
     'menues',
     'banner',
     'tinymce',
+    
 )
 
 # Template processors by Oerb
