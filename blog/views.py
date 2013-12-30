@@ -5,6 +5,7 @@
 from blog.models import Item, Menu
 from django.shortcuts import get_object_or_404, render_to_response, redirect, render
 from django.template import RequestContext
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 def chunks(l, n):
@@ -34,10 +35,20 @@ def index(request, item_id):
 
 def blog_level0(request, choice_id):
     itemlist_byMenu_id = Item.objects.filter(menu_id = choice_id).filter(item_hide=False)
-    itemlist_byMenu_id = list(chunks(itemlist_byMenu_id,3))
+    paginator = Paginator(itemlist_byMenu_id, 6) # Show 6 items per page
+    page = request.GET.get('page')
+    try:
+        paginated_itemlist = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        paginated_itemlist = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        paginated_itemlist = paginator.page(paginator.num_pages)
+    chunked_itemlist = list(chunks(paginated_itemlist,3)) # show 3 items per Row
     menuchoice = Menu.objects.get(pk=choice_id)
     return render_to_response('blog/blog_level0.html', {'menuchoice': menuchoice ,
-                                                        'itemlist_byMenu_id':itemlist_byMenu_id},
+                                                        'paginated_itemlist':paginated_itemlist ,'chunked_itemlist':chunked_itemlist },
                                                         context_instance=RequestContext(request))
 
 def blog_level1(request, choice_id):
@@ -47,10 +58,25 @@ def blog_level1(request, choice_id):
     for e in menues:
         menuesid.append(e.id)
     itemlist_byMenu_id = Item.objects.filter(menu_id__in = menuesid).filter(item_hide=False)
+
+    paginator = Paginator(itemlist_byMenu_id, 6) # Show 6 items per page
+    page = request.GET.get('page')
+    try:
+        paginated_itemlist = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        paginated_itemlist = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        paginated_itemlist = paginator.page(paginator.num_pages)
+    chunked_itemlist = list(chunks(paginated_itemlist,3)) # show 3 items per Row
+
+
     itemlist_byMenu_id = list(chunks(itemlist_byMenu_id,3))
     menuchoice = Menu.objects.get(pk=choice_id)
-    return render_to_response('blog/blog_level1.html', {'menuchoice': menuchoice ,
-                                                        'itemlist_byMenu_id':itemlist_byMenu_id},
+    return render_to_response('blog/blog_level1.html', {'menuchoice': menuchoice,
+                                                        'paginated_itemlist':paginated_itemlist,
+                                                        'chunked_itemlist':chunked_itemlist},
                                                         context_instance=RequestContext(request))
 
 

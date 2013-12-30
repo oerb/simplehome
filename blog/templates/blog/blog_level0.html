@@ -4,7 +4,7 @@
     <div class="container">
         <div class="row row-offcanvas row-offcanvas-right">
             <div class="col-xs-8 col-sm-8">
-                {% for itemlist in itemlist_byMenu_id %}
+                {% for itemlist in chunked_itemlist %}
                 <div class="row">
                     {% for element in itemlist %}
                     <div class="col-6 col-sm-6 col-lg-4" style="overflow: hidden;">
@@ -23,6 +23,21 @@
                 </div>
             {% endfor %}
             </div>
+        </div>
+        <div class="pagination">
+            <span class="step-links">
+                {% if paginated_itemlist.has_previous %}
+                    <a href="?page={{ paginated_itemlist.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ paginated_itemlist.number }} of {{ paginated_itemlist.paginator.num_pages }}.
+                </span>
+
+                {% if paginated_itemlist.has_next %}
+                    <a href="?page={{ paginated_itemlist.next_page_number }}">next</a>
+                {% endif %}
+            </span>
         </div>
     </div>
 
