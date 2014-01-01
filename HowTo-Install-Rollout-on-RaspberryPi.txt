@@ -52,13 +52,13 @@ sudo chown www-data:www-data -R /var/www
 sudo chmod 755 -R /var/www
 
 (Do not forget this Permissions in following Installationprocess)
-(you could give www-data a Password by passwd www-data an change user by)
+(you could give www-data a Password by passwd www-data and change user by)
 ( su www-data )
 
 
 get simplehome:
 ===============
-cd ~/projects/
+cd /var/www/
 git clone https://github.com/oerb/simplehome.git
 
 set write permission for sqlite3.db:
