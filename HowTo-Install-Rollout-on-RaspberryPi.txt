@@ -122,6 +122,11 @@ STATIC_ROOT = "/var/www/example.com/static/"
 
 $ python manage.py collectstatic
 
+(there are some more directory Infos in /var/www/simplehome/simplehome/settings.py
+that have to be edit to the /var/www/simplehome/...... look example 
+rolleout-setting.py.txt
+)
+
 Uwsgi configuration:
 ====================
 Like with Nginx.. configuration files are stored in /etc/uwsgi/apps-available. Go to this directory and create a new file.
