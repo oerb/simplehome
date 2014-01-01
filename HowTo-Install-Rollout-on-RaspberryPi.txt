@@ -1,0 +1,186 @@
+##################################################
+#                                                #
+#   HowTo install Django on a Raspberry Pi       #
+#    after first installation 31.12.2013         #
+#         	by Oerb                          #
+#                                                #
+##################################################
+
+Helpfull Links:
+===============
+- Raspberry Pi:
+[1] http://www.raspberrypi.org/downloads
+
+- HowTo's Django / Nginx:
+[2] https://code.djangoproject.com/wiki/DjangoAndNginx
+[3] http://michal.karzynski.pl/blog/2013/06/09/django-nginx-gunicorn-virtualenv-supervisor/
+[4] http://eshlox.net/en/2012/09/11/nginx-uwsgi-virtualenv-and-django-ubuntu-1204/
+
+- HowTo's Django:
+[5] https://docs.djangoproject.com/en/dev/howto/static-files/
+
+Pre decisions:
+==============
+
+I'll use nginx because of it's Performance and it's a raspberry pi
+8and dictum gives me the hind)
+
+after bad Experiences in Installationprocess:
+=============================================
+
+1. I experimented with Fastcgi but I got in Problems (mostly Permissionproblems)
+2. so I begin to use uwsgi where I got compareable Problems
+
+>> conclusion after hard fails and Headdemage: 
+  - nginx in raspberian user is www-data  ( OK )
+  - uwsgi in raspberian user is pi        ( Fail ) - Hate #&%-*~
+  > fastcgi may be user pi Problem too - not tested yet -
+
+How I get this conclusion:
+ps aux | grep nginx
+ps aux | grep uwsgi
+
+
+First install required applications:
+====================================
+sudo apt-get install git nginx uwsgi uwsgi-plugin-all python-virtualenv
+
+Webserver Directory:
+====================
+mkdir /var/www/
+sudo chown www-data:www-data -R /var/www
+sudo chmod 755 -R /var/www
+
+(Do not forget this Permissions in following Installationprocess)
+(you could give www-data a Password by passwd www-data an change user by)
+( su www-data )
+
+
+get simplehome:
+===============
+cd ~/projects/
+git clone https://github.com/oerb/simplehome.git
+
+set write permission for sqlite3.db:
+====================================
+sudo chmod 766 /var/www/simplehome/simplehome.db
+
+generate vertualenv in env dir and install nessesary Packages:
+==============================================================
+cd ~/projects/simplehome/
+virtualenv env
+source env/bin/activate
+pip install django Pillow django-tinymce django-endless-pagination
+
+Nginx configuration:
+====================
+IMHO, by default, nginx is configured for basic tasks. I won't change this configuration in this entry. Configuration files are stored in /etc/nginx/sites-available. Go to this directory and create a new file.
+
+vim /etc/nginx/sites-available/oerb.de
+
+Example configuration:
+-----------------------------------------------
+server {
+    listen  80;
+    server_name oerb.de www.oerb.de;
+    access_log /var/log/nginx/oerb.de_access.log;
+    error_log /var/log/nginx/oerb.de_error.log;
+
+    location / {
+        uwsgi_pass  unix:///tmp/oerb.de.sock;
+        include     uwsgi_params;
+    }
+
+    location /media/  {
+        alias /var/www/simplehome/media/;
+    }
+
+    location  /static/ {
+        alias  /var/www/simplehome/static/;
+    }
+}
+------------------------------------------------
+
+We must create symlink to enable this.
+
+ln -s /etc/nginx/sites-enabled/sites-available/oerb.de .
+
+
+Django Static collection:
+=========================
+
+as you can see in the Nginx configuration the Project staticfiles are 
+centralised in the folder /var/www/simplehome/static/
+for django development the static files are separated to their aps
+and must be collected. This is done by [5]:
+
+# Set the STATIC_ROOT setting to the directory from which you’d like to serve these files, for example:
+
+STATIC_ROOT = "/var/www/example.com/static/"
+
+# Run the collectstatic management command:
+
+$ python manage.py collectstatic
+
+Uwsgi configuration:
+====================
+Like with Nginx.. configuration files are stored in /etc/uwsgi/apps-available. Go to this directory and create a new file.
+
+vim /etc/uwsgi/apps-available/oerb.de.ini
+
+--------------------------------------
+[uwsgi]
+master = true
+vhost = true
+uid = www-data
+gid = www-data
+plugins = python
+socket = /tmp/oerb.de.sock
+master = true
+enable-threads = false
+processes = 1
+module = simplehome.wsgi
+chmod-socket = 666
+wsgi-file = /var/www/simplehome/simplehome/wsgi.py
+virtualenv = /var/www/simplehome/env
+chdir = /var/www/simplehome/
+vacuum = true
+---------------------------------------
+
+Enable this by setting a symlink:
+
+ln -s /etc/uwsgi/enabled/oerb.de.ini /etc/uwsgi/apps-available/oerb.de.ini .
+
+That's all. Now, run this services:
+===================================
+
+sudo service nginx start
+sudo service uwsgi start
+
+known Problems:
+===============
+first at all look into logs:
+cat /var/log/nginx/simplehome.access.log | less
+cat /var/log/uwsgi/app/oerb.de.log | less
+
+The central Problem I run into was permission foo. Nginx was using
+www-data user/group and uwsgi was using pi as user. That does not work.
+In uwsgi the user/group is set into the configfile
+
+/etc/uwsgi/apps-available/oerb.de.ini
+
+by the Parameter
+uid = www-data
+gid = www-data
+
+and in nginx the user/group is set into the central nginx configfile
+
+/etc/nginx/nginx.conf
+
+by the parameter
+user www-data;
+
+(for testing and understanding you could set to user pi if www-data 
+runs into permissionfoo but for securityissues do not do this on 
+productive System)
+
