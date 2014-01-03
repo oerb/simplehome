@@ -2,6 +2,7 @@ __author__ = 'oerb'
 
 from django.contrib import admin
 from menues.models import Menu, Bilder, MetaInfos
+from django.contrib.sites.models import Site
 
 class MenuAdmin(admin.ModelAdmin):
     """
@@ -31,3 +32,5 @@ class BilderAdmin(admin.ModelAdmin):
 admin.site.register(Menu, MenuAdmin)
 admin.site.register(Bilder, BilderAdmin)
 admin.site.register(MetaInfos, MetaInfosAdmin)
+# Unregister the Site module because Multiple Domain is not implemented
+admin.site.unregister(Site)
