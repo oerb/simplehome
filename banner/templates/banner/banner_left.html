@@ -6,7 +6,7 @@
         <img src="{{ MEDIA_URL }}{{ banner.bannerimage.bild_file}}" alt="image"/>
     </a>
     <p>
-        {{ banner.bannerhtml | striptags }}
+        {{ banner.bannerhtml | safe }}
     </p>
 {% endfor %}
 
