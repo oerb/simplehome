@@ -35,7 +35,7 @@ class Menu(models.Model):
     description = models.TextField()
     level = models.PositiveIntegerField()
     parent = models.ForeignKey('self', blank=True, null=True,
-                             related_name=u'child')
+                             related_name=u'Parent')
     menu_hide = models.BooleanField()
     date_creation = models.DateTimeField(editable=False, auto_now_add=True)
     date_last_edit = models.DateTimeField(editable=False, auto_now=True)
@@ -46,7 +46,11 @@ class Menu(models.Model):
         ordering = ['-date_creation']
 
     def __unicode__(self):
-        return self.subject
+        if self.level == 2:
+            subjectleveld = str(self.parent) + " | " + self.subject
+        else:
+            subjectleveld = self.subject
+        return subjectleveld
 
 
 class MetaInfos(models.Model):

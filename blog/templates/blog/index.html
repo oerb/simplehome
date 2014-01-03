@@ -3,7 +3,7 @@
 {% block content %}
     {%  if item.id %}
             {% if item.item_description %}
-                    {{ item.item_description | save }}
+                    {{ item.item_description | safe }}
                 {% else %}
                   No description provided
                 {% endif %}
