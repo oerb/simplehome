@@ -3,8 +3,7 @@
 {% block content %}
     {%  if item.id %}
             {% if item.item_description %}
-
-                    {{ item.item_description | striptags }}
+                    {{ item.item_description | save }}
                 {% else %}
                   No description provided
                 {% endif %}
