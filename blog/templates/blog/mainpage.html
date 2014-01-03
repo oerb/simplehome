@@ -14,7 +14,7 @@
                         </h2>
                         <p>{{ element.item_date_creation | date:"D, d.m.Y" }}</p>
                         <p style="overflow: hidden;">
-                            {{ element.item_description | slice:":250" | safe }}
+                            {{ element.item_description | slice:":250" | striptags }}
                             <a class="btn btn-default" role="button" href="{% url "blog_item" element.id %}"> … </a>
                         </p>
                 </div>

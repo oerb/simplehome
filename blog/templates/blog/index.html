@@ -4,7 +4,7 @@
     {%  if item.id %}
             {% if item.item_description %}
 
-                    {{ item.item_description | safe }}
+                    {{ item.item_description | striptags }}
                 {% else %}
                   No description provided
                 {% endif %}
